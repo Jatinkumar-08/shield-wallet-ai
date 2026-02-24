@@ -1,6 +1,6 @@
-streamlit
-pandas
-opencv-python-headless
-numpy
-qrcode==7.4.2
-pillow  # Also needed for QR code images
+streamlit 
+pandas 
+opencv-python-headless 
+numpy 
+qrcode==7.4.2 
+pillow 
