@@ -188,7 +188,7 @@ Webcam-based face verification may not work on Streamlit Cloud.
 ---
 
 # 👨‍💻 Author
-
+Jatinkumar GitHub: Jatinkumar-08
 
 # 📈 Why This Project Is Valuable
 
