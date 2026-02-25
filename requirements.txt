@@ -1,10 +1,10 @@
-streamlit 
-pandas 
-opencv-python-headless 
-numpy 
-qrcode==7.4.2 
-pillow 
-face-recognition 
 cmake 
 dlib 
+face-recognition 
+numpy 
 opencv-python 
+opencv-python-headless 
+pandas 
+pillow 
+qrcode==7.4.2 
+streamlit 
