@@ -1,6 +1,5 @@
 streamlit 
 pandas 
-opencv-python-headless==4.8.1.78 
 numpy 
 qrcode==7.4.2 
 pillow 

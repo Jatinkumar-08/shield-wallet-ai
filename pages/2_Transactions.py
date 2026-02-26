@@ -1,12 +1,12 @@
-import streamlit as st
-import pandas as pd
-import cv2
-import numpy as np
-import time
-from ui_style import apply_modern_ui
-from datetime import datetime
-from navbar import show_navbar
-import verify_face  # Import face verification module
+# Temporary fix - remove cv2 import 
+import streamlit as st 
+import pandas as pd 
+import time 
+from ui_style import apply_modern_ui 
+from datetime import datetime 
+from navbar import show_navbar 
+import verify_face 
+ 
 
 apply_modern_ui()
 show_navbar()
