@@ -1,16 +1,16 @@
 import streamlit as st
 import pandas as pd
 import qrcode
-
-from navbar import show_navbar
-show_navbar()
-from ui_style import apply_modern_ui
-apply_modern_ui()
 from io import BytesIO
 from datetime import datetime
-from navbar import show_navbar
-import verify_face  # Import face verification module
 
+# Import UI components
+from navbar import show_navbar
+from ui_style import apply_modern_ui
+import verify_face
+
+# Apply UI (only once!)
+apply_modern_ui()
 show_navbar()
 
 st.title("💰 QR Payment")
@@ -64,11 +64,11 @@ if st.button("🔄 Generate QR", type="primary"):
         
         if not verified:
             st.error("❌ Transaction cancelled: Face verification failed")
-            st.stop()  # Stop execution
+            st.stop()
         else:
             st.success("✅ Face verified! Proceeding with payment...")
     
-    # STEP 2: Generate QR code (only if verified or small amount)
+    # STEP 2: Generate QR code
     qr_data = f"user:{username}|amount:{amount}|time:{datetime.now()}"
     qr = qrcode.make(qr_data)
     
@@ -77,11 +77,11 @@ if st.button("🔄 Generate QR", type="primary"):
     
     st.image(buf.getvalue(), caption="📷 Scan this QR code to pay", width=300)
     
-    # Store amount in session state for payment simulation
+    # Store in session state
     st.session_state['qr_amount'] = amount
     st.session_state['qr_generated'] = True
 
-# STEP 3: Simulate Payment (only shows after QR is generated)
+# STEP 3: Simulate Payment
 if st.session_state.get('qr_generated', False):
     st.divider()
     st.subheader("💸 Complete Payment")
@@ -89,7 +89,7 @@ if st.session_state.get('qr_generated', False):
     col1, col2 = st.columns(2)
     
     with col1:
-        if st.button("✅ Simulate Payment", type="primary"):
+        if st.button("✅ Simulate Payment", type="primary", key="simulate_payment_btn"):
             amount_to_pay = st.session_state['qr_amount']
             
             if amount_to_pay <= balance:
@@ -125,7 +125,8 @@ if st.session_state.get('qr_generated', False):
                     label="📥 Download Receipt",
                     data=receipt,
                     file_name=f"receipt_{username}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                    mime="text/plain"
+                    mime="text/plain",
+                    key="download_receipt_btn"
                 )
                 
                 # Clear QR state
@@ -135,11 +136,11 @@ if st.session_state.get('qr_generated', False):
                 st.error(f"❌ Insufficient balance! Available: ₹{balance:,.2f}")
     
     with col2:
-        if st.button("❌ Cancel"):
+        if st.button("❌ Cancel", key="cancel_payment_btn"):
             st.session_state['qr_generated'] = False
             st.rerun()
 
-# Show recent transactions (optional)
+# Show recent transactions
 st.divider()
 with st.expander("📊 Recent QR Transactions"):
     recent_qr = transactions[(transactions['username'] == username) & 
