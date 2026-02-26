@@ -1,11 +1,3 @@
-# Temporary fix - remove cv2 import 
-import streamlit as st 
-import pandas as pd 
-import time 
-from ui_style import apply_modern_ui 
-from datetime import datetime 
-from navbar import show_navbar 
-import verify_face 
  
 
 apply_modern_ui()

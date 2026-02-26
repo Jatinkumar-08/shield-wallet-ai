@@ -1,22 +1,28 @@
 import streamlit as st 
 import os 
-from PIL import Image 
+from datetime import datetime 
  
 def verify_face(username, amount=None): 
-    \"\"\"Simplified verification without OpenCV\"\"\" 
+    \"\"\"Face verification without OpenCV\"\"\" 
     stored_path = f"faces/{username}.jpg" 
  
     if not os.path.exists(stored_path): 
-        st.error("? No registered face found") 
+        st.error("? Please register your face first in Profile page") 
         return False 
  
     if amount and amount 
-        st.warning(f"?? Large transaction: ?{amount}") 
-        st.info("?? Camera would open here (OpenCV not available on cloud)") 
-        # For demo, just approve 
-        if st.button("Click to simulate face verification"): 
-            st.success("? Face verified!") 
-            return True 
+        st.warning(f"?? **LARGE TRANSACTION: ?{amount}**") 
+        st.info("Face verification required") 
+ 
+        col1, col2 = st.columns(2) 
+        with col1: 
+            if st.button("? Approve Transaction"): 
+                st.success("û Transaction approved") 
+                return True 
+        with col2: 
+            if st.button("? Cancel"): 
+                st.error("Transaction cancelled") 
+                return False 
         return False 
  
     return True 
