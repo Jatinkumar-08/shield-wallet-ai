@@ -1,7 +1,14 @@
+import streamlit as st
+import pandas as pd
+import time
+from datetime import datetime
+
+# Import UI components (ONCE!)
 from ui_style import apply_modern_ui
-apply_modern_ui() 
 from navbar import show_navbar
-show_navbar()
+import verify_face
+
+# Apply UI (ONLY ONCE!)
 apply_modern_ui()
 show_navbar()
 
@@ -49,7 +56,8 @@ payment_method = st.selectbox(
         "🏦 Bank Transfer",
         "💳 Credit Card",
         "📱 UPI"
-    ]
+    ],
+    key="payment_method_select"
 )
 
 bank_name = "N/A"
@@ -68,10 +76,11 @@ if payment_method == "🏦 Bank Transfer":
             "Canara Bank",
             "Union Bank of India",
             "IDFC First Bank"
-        ]
+        ],
+        key="bank_select"
     )
 
-amount = st.number_input("Enter amount (₹)", min_value=1, step=100, format="%d")
+amount = st.number_input("Enter amount (₹)", min_value=1, step=100, format="%d", key="amount_input")
 
 # Show warning for large transactions
 if amount >= LARGE_AMOUNT:
@@ -79,7 +88,7 @@ if amount >= LARGE_AMOUNT:
     st.info("🔐 Face verification will be done automatically")
 
 # -------- PAYMENT LOGIC WITH AUTO FACE VERIFICATION --------
-if st.button("💸 Pay Now", type="primary"):
+if st.button("💸 Pay Now", type="primary", key="pay_now_btn"):
 
     if amount <= balance:
         
@@ -88,19 +97,17 @@ if st.button("💸 Pay Now", type="primary"):
             st.info("📸 **Auto face verification in progress...**")
             st.markdown("🔵 Please look at the camera. Verification will happen automatically.")
             
-            # Call face verification (auto-capture version)
+            # Call face verification
             with st.spinner("🔄 Initializing camera..."):
                 verified = verify_face.verify_face(username, amount)
             
             if not verified:
                 st.error("❌ Transaction cancelled: Face verification failed")
-                st.stop()  # Stop execution
+                st.stop()
             else:
                 st.success("✅ Face verified! Processing payment...")
         
-        # STEP 2: Process payment (only if verified or small amount)
-        
-        # Deduct balance
+        # STEP 2: Process payment
         users.loc[users["username"] == username, "balance"] -= amount
         users.to_csv("users.csv", index=False)
 
@@ -121,7 +128,7 @@ if st.button("💸 Pay Now", type="primary"):
             "method": payment_method,
             "bank": bank_name,
             "time": time.time(),
-            "verified": amount >= LARGE_AMOUNT  # Track if face verified
+            "verified": amount >= LARGE_AMOUNT
         }
 
     else:
@@ -136,11 +143,10 @@ if "last_transaction" in st.session_state:
     if time_passed < 10:
         st.warning("⏰ You can undo this transaction within 10 seconds.")
         
-        # Show if it was a face-verified transaction
         if st.session_state["last_transaction"].get("verified", False):
             st.caption("🔐 This was a large transaction that required face verification")
 
-        if st.button("↩️ Undo Transaction"):
+        if st.button("↩️ Undo Transaction", key="undo_btn"):
 
             amount = st.session_state["last_transaction"]["amount"]
             bank_name = st.session_state["last_transaction"]["bank"]
@@ -151,7 +157,7 @@ if "last_transaction" in st.session_state:
 
             st.success("✅ Transaction Reversed Successfully!")
 
-            # -------- AI Risk Check (Only for reversed transactions) --------
+            # AI Risk Check
             risk_message = []
             
             if amount > 2000:
@@ -164,7 +170,6 @@ if "last_transaction" in st.session_state:
             if current_hour < 6 or current_hour > 23:
                 risk_message.append("⚠ Late night transaction")
             
-            # Add face verification status to risk analysis
             if st.session_state["last_transaction"].get("verified", False):
                 risk_message.append("✅ Face verified transaction")
             
@@ -193,7 +198,6 @@ if not user_txn.empty:
     user_txn["date"] = pd.to_datetime(user_txn["date"], errors="coerce")
     user_txn = user_txn.sort_values(by="date", ascending=False)
     
-    # Add a visual indicator for large transactions
     def highlight_large(val):
         if isinstance(val, (int, float)) and val >= LARGE_AMOUNT:
             return 'background-color: #ffebee; color: #c62828'
@@ -205,7 +209,6 @@ if not user_txn.empty:
         height=400
     )
     
-    # Summary stats
     total_spent = user_txn['amount'].sum()
     large_txns = user_txn[user_txn['amount'] >= LARGE_AMOUNT].shape[0]
     
@@ -225,14 +228,14 @@ st.divider()
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    if st.button("← Back to Dashboard"):
+    if st.button("← Back to Dashboard", key="back_dash_btn"):
         st.switch_page("pages/1_Dashboard.py")
 
 with col2:
-    if st.button("📱 Go to QR Payment"):
+    if st.button("📱 Go to QR Payment", key="go_qr_btn"):
         st.switch_page("pages/3_QR_Payment.py")
 
 with col3:
-    if st.button("🚪 Logout"):
+    if st.button("🚪 Logout", key="logout_btn"):
         st.session_state.clear()
         st.switch_page("app.py")
