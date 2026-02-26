@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import qrcode
+
 from ui_style import apply_modern_ui
 apply_modern_ui()
 from io import BytesIO
