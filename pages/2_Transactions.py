@@ -1,6 +1,7 @@
 from ui_style import apply_modern_ui
 apply_modern_ui() 
-
+from navbar import show_navbar
+show_navbar()
 apply_modern_ui()
 show_navbar()
 

@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import qrcode
 
+from navbar import show_navbar
+show_navbar()
 from ui_style import apply_modern_ui
 apply_modern_ui()
 from io import BytesIO
